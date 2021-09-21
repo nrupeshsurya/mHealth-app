@@ -9,7 +9,7 @@ const { PRIMARY_COLOR, SECONDARY_COLOR } = colors;
 export default function HealthProgress() {
     return (
         <View style = {styles.weatherInfo}>
-            {/* App Name */}
+            {/* Current Day */}
             <Text style = {styles.textSecondary}>MHealth App</Text>
 
             {/* Circular Progress Bar  */}
@@ -18,6 +18,7 @@ export default function HealthProgress() {
             width={15}
             fill={62}
             tintColor={PRIMARY_COLOR}
+            rotation={0}
             onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor="#e0ebeb" >
             {fill => <Text style={styles.points}>62%</Text>}
