@@ -27,7 +27,7 @@ export default function HealthProgress() {
             <Text style = {styles.textSecondary}>Daily target : 5 Km</Text>
 
             {/* Muscle Activity Progress  */}
-            <Progress.Bar style={styles.linProgress} progress={0.71} width={200} color={PRIMARY_COLOR} />
+            <Progress.Bar style={styles.linProgress} progress={0.71} width={200} color={SECONDARY_COLOR} />
             <Text style = {styles.textSecondary}>EMG Index : 7.1</Text>
         </View>
     )
