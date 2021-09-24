@@ -1,10 +1,11 @@
-import React from 'react'
-import {StyleSheet, View } from 'react-native'
+import React, { useState } from 'react'
+import {StyleSheet, View, Button } from 'react-native'
 import {colors} from '../utils/index';
 import  WeekBarChart  from '../components/WeekBarChart';
 const { PRIMARY_COLOR, SECONDARY_COLOR } = colors;
 
 export default function weekly() {
+    const [distanceEmgSetter, setDistanceEmgSetter] = useState(true);
     const chartConfig = {
         backgroundColor: '#ffffff',
         backgroundGradientFrom: '#ffffff',
@@ -28,9 +29,28 @@ export default function weekly() {
           }
         ]
     };  
+    const data1 = {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [
+          {
+            data: [6.1, 7.2, 8.9, 8.4, 8.2, 8.9]
+          }
+        ]
+    };  
     return (
         <View>
-            <WeekBarChart graphStyle={graphStyle} data={data} chartConfig={chartConfig} />
+            {distanceEmgSetter && <WeekBarChart graphStyle={graphStyle} data={data} chartConfig={chartConfig} suffix={"km"} />}
+            {!distanceEmgSetter && <WeekBarChart graphStyle={graphStyle} data={data1} chartConfig={chartConfig} suffix={""} />}
+            <Button
+            title="Distance"
+            color="#f194ff"
+            onPress={() => setDistanceEmgSetter(true)}
+            />
+            <Button
+            title="EMG Index"
+            color="#f194ff"
+            onPress={() => setDistanceEmgSetter(false)}
+            />
         </View>
     )
 }

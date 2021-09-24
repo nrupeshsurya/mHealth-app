@@ -3,7 +3,7 @@ import { View, Dimensions } from 'react-native'
 import {BarChart} from 'react-native-chart-kit';
 
 
-export default function WeekBarChart({graphStyle, data, chartConfig}) {
+export default function WeekBarChart({graphStyle, data, chartConfig, suffix}) {
     const width = Dimensions.get('window').width * 0.97
     const height = 300
     return (
@@ -14,7 +14,7 @@ export default function WeekBarChart({graphStyle, data, chartConfig}) {
             width={width}
             height={height}
             yAxisLabel=""
-            yAxisSuffix="Km"
+            yAxisSuffix={suffix}
             chartConfig={chartConfig}
             showBarTops={true}
             fromZero={true}
