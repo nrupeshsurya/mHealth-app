@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, StyleSheet } from 'react-native'
 import {BarChart} from 'react-native-chart-kit';
 
 
 export default function WeekBarChart({ data, color, suffix}) {
-    const width = Dimensions.get('window').width * 0.95;
+    const width = Dimensions.get('window').width * 0.96;
     const height = 300;
     const chartConfig = {
         backgroundColor: '#ffffff',
@@ -22,7 +22,7 @@ export default function WeekBarChart({ data, color, suffix}) {
         ...chartConfig.style
     }
     return (
-        <View>
+        <View style={styles.barChart}>
             <BarChart
             style={graphStyle}
             data={data}
@@ -37,3 +37,9 @@ export default function WeekBarChart({ data, color, suffix}) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    barChart: {
+        alignItems: 'center',
+      },
+});

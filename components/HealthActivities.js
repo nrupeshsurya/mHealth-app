@@ -5,7 +5,8 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
-export default function HealthActivites() {
+export default function HealthActivites({data}) {
+    const {laying, walking, sitting, averagePace, distance } = data;
     return (
         <View style = {styles.weatherDetails}>
             <View style={styles.weatherDetailsRow}>
@@ -14,7 +15,7 @@ export default function HealthActivites() {
                         <FontAwesome5 name="walking" size={25} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             {/* <Text>Time Spent :</Text> */}
-                            <Text style={styles.textSecondary}>1 Hr 20 Min</Text>
+                            <Text style={styles.textSecondary}>{walking}</Text>
                         </View>
                     </View>
                 </View>
@@ -23,7 +24,7 @@ export default function HealthActivites() {
                         <MaterialCommunityIcons name="chair-rolling" size={25} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             {/* <Text>Feels like :</Text> */}
-                            <Text style={styles.textSecondary}>3 Hr 12 Min</Text>
+                            <Text style={styles.textSecondary}>{sitting}</Text>
                         </View>
                     </View>
                 </View>
@@ -32,7 +33,7 @@ export default function HealthActivites() {
                         <FontAwesome5 name="bed" size={20} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             {/* <Text>humidity :</Text> */}
-                            <Text style={styles.textSecondary}>7 Hr 23 Min</Text>
+                            <Text style={styles.textSecondary}>{laying}</Text>
                         </View>
                     </View>
                 </View>
@@ -43,7 +44,7 @@ export default function HealthActivites() {
                         <MaterialCommunityIcons name="map-marker-multiple" size={30} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             <Text>Total Distance :</Text>
-                            <Text style={styles.textSecondary}>3.1 Km</Text>
+                            <Text style={styles.textSecondary}>{Math.round(distance*10)/10} Km</Text>
                         </View>
                     </View>
                 </View>
@@ -52,7 +53,7 @@ export default function HealthActivites() {
                         <MaterialCommunityIcons name="speedometer" size={30} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             <Text>Average Pace: </Text>
-                            <Text style={styles.textSecondary}>5.6 Km/Hr</Text>
+                            <Text style={styles.textSecondary}>{Math.round(averagePace*10)/10} Km/Hr</Text>
                         </View>
                     </View>
                 </View>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     },
     textSecondary: {
         fontSize: 15,
-        color: SECONDARY_COLOR,
+        color: '#494850',
         fontWeight: '700',
         margin: 7
     }

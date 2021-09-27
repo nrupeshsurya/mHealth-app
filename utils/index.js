@@ -1,7 +1,8 @@
 export const colors = {
     PRIMARY_COLOR: '#5BC0BE',
-    SECONDARY_COLOR: '#494850',
+    SECONDARY_COLOR: '#c05b5d',
     BORDER_COLOR: '#494850',
+    DISABLED_BUTTON_COLOR: '#DCDCDC',
 }
 
 export const chartConfig = {
