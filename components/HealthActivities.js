@@ -65,7 +65,7 @@ export default function HealthActivites({data}) {
 
 const styles = StyleSheet.create({
     weatherDetails : {
-        marginTop: 'auto',
+        marginTop: 40,
         margin: 15,
         borderWidth: 1,
         borderColor: BORDER_COLOR,

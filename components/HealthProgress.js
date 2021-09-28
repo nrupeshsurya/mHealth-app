@@ -1,21 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../utils/index';
+import { colors, calculateMiddleColor } from '../utils/index';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import * as Progress from 'react-native-progress';
-import moment from "moment";
-import daily from '../screens/daily';
 
-
-const { PRIMARY_COLOR, SECONDARY_COLOR } = colors;
+const { PRIMARY_COLOR, SECONDARY_COLOR, GREY_COLOR } = colors;
 
 export default function HealthProgress({data}) {
-    // const [date, setDate] = useState(moment().format('MMMM Do, YYYY'));
     const {dailyTarget, emgIndex, distance} = data;
-    // console.log(dailyTarget);
-    // console.log(emgIndex);
-    // console.log(distance);
     const fillVal = Math.floor(distance/dailyTarget*100);
+    const tintColor = `#${calculateMiddleColor({ratio: fillVal/100})}`;
+    const linColor = `#${calculateMiddleColor({ratio: emgIndex/10, color1: GREY_COLOR , color2: SECONDARY_COLOR})}`;
+    console.log(tintColor);
     return (
         <View style = {styles.progress}>
             {/* Circular Progress Bar  */}
@@ -23,7 +19,7 @@ export default function HealthProgress({data}) {
             size={120}
             width={15}
             fill={fillVal}
-            tintColor={PRIMARY_COLOR}
+            tintColor={tintColor}
             rotation={0}
             onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor="#e0ebeb" >
@@ -33,7 +29,7 @@ export default function HealthProgress({data}) {
             <Text style = {styles.textSecondary}>Daily target : {dailyTarget} Km</Text>
 
             {/* Muscle Activity Progress  */}
-            <Progress.Bar style={styles.linProgress} progress={emgIndex/10} width={200} color={SECONDARY_COLOR} />
+            <Progress.Bar style={styles.linProgress} progress={emgIndex/10} width={200} color={linColor} />
             <Text style = {styles.textSecondary}>EMG Index : {emgIndex}</Text>
         </View>
     )

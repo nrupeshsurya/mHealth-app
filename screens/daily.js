@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import HealthActivites from '../components/HealthActivities';
 import HealthProgress from '../components/HealthProgress';
 import moment from "moment";
@@ -10,6 +10,7 @@ const {PRIMARY_COLOR, DISABLED_BUTTON_COLOR} = colors;
 
 export default function daily() {
     const [disableDate, setDisableDate] = useState(false);
+    const [refresh, setRefresh] = useState(false);
     const [date, setDate] = useState(moment().format('MMMM Do, YYYY'));
     const [data, setData] = useState({
         distance : 3.1,
@@ -36,47 +37,66 @@ export default function daily() {
         else {
             setDisableDate(false);
         }
+        load();
+    }, [date])
+    
+    async function load() {
+        // setRefresh(true);
         setData({
-            distance: Math.random() * (6 - 3) + 3,
+            distance: Math.random() * (5 - 0) + 0,
             averagePace: Math.random() * (7 - 3) + 3,
             laying: `${Math.floor(Math.random() * (8 - 6) + 6)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
             walking: `${Math.floor(Math.random() * (2 - 1) + 1)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
             sitting: `${Math.floor(Math.random() * (3 - 2) + 2)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
-            emgIndex: Math.round((Math.random() * (9 - 6) + 6)*10)/10,
+            emgIndex: Math.round((Math.random() * (9 - 0) + 0)*10)/10,
             dailyTarget: 5,
         });
-    }, [date])
+        // setRefresh(false);
+    };
     return (
-        <View style={styles.container}>
-            <StatusBar style="auto" />
-            <View style = {styles.main}>
-                <View style={styles.row}>
-                    <TouchableOpacity 
-                        style={[styles.triangle,{transform: [{ rotate: "-90deg" }]}]}
-                        onPress={() => {
-                            setDate(moment(date,'MMMM Do, YYYY').subtract(1,'days').format('MMMM Do, YYYY'));
+        <ScrollView
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refresh}
+                    onRefresh={load}
+                />
+            }
+        >
+            <View style={styles.container}>
+                <StatusBar style="auto" />
+                <View style = {styles.main}>
+                    <View style={styles.row}>
+                        <TouchableOpacity 
+                            style={[styles.triangle,{transform: [{ rotate: "-90deg" }]}]}
+                            onPress={() => {
+                                setDate(moment(date,'MMMM Do, YYYY').subtract(1,'days').format('MMMM Do, YYYY'));
+                            }
                         }
-                    }
-                    />
-                    <Text style = {styles.textSecondary}>{date}</Text>
-                    <TouchableOpacity
-                        style={[styles.triangle,{transform: [{ rotate: "90deg" }]}, {borderBottomColor: disableDate? DISABLED_BUTTON_COLOR : PRIMARY_COLOR}]}
-                        disabled={disableDate}
-                        activeOpacity={disableDate? 1:0.2}
-                        onPress={() => {
-                            setDate(moment(date,'MMMM Do, YYYY').add(1,'days').format('MMMM Do, YYYY'));
+                        />
+                        <Text style = {styles.textSecondary}>{date}</Text>
+                        <TouchableOpacity
+                            style={[styles.triangle,{transform: [{ rotate: "90deg" }]}, {borderBottomColor: disableDate? DISABLED_BUTTON_COLOR : PRIMARY_COLOR}]}
+                            disabled={disableDate}
+                            activeOpacity={disableDate? 1:0.2}
+                            onPress={() => {
+                                setDate(moment(date,'MMMM Do, YYYY').add(1,'days').format('MMMM Do, YYYY'));
+                            }
                         }
-                    }
-                    />
+                        />
+                    </View>
+                    <HealthProgress  data = {data}/>
                 </View>
-                <HealthProgress  data = {data}/>
+                <HealthActivites data={data} />
             </View>
-            <HealthActivites data={data} />
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
+    scrollView: {
+        marginTop: 50
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
