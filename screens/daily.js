@@ -38,7 +38,7 @@ export default function daily() {
             setDisableDate(false);
         }
         load();
-    }, [date])
+    }, [date]);
     
     async function load() {
         // setRefresh(true);

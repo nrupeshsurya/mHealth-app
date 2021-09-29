@@ -4,14 +4,14 @@ import { colors, calculateMiddleColor } from '../utils/index';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import * as Progress from 'react-native-progress';
 
-const { PRIMARY_COLOR, SECONDARY_COLOR, GREY_COLOR } = colors;
+const { PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_LIGHT_COLOR } = colors;
 
 export default function HealthProgress({data}) {
     const {dailyTarget, emgIndex, distance} = data;
     const fillVal = Math.floor(distance/dailyTarget*100);
     const tintColor = `#${calculateMiddleColor({ratio: fillVal/100})}`;
-    const linColor = `#${calculateMiddleColor({ratio: emgIndex/10, color1: GREY_COLOR , color2: SECONDARY_COLOR})}`;
-    console.log(tintColor);
+    const linColor = `#${calculateMiddleColor({ratio: emgIndex/10, color1: SECONDARY_LIGHT_COLOR , color2: SECONDARY_COLOR})}`;
+    // console.log(tintColor);
     return (
         <View style = {styles.progress}>
             {/* Circular Progress Bar  */}
@@ -21,7 +21,7 @@ export default function HealthProgress({data}) {
             fill={fillVal}
             tintColor={tintColor}
             rotation={0}
-            onAnimationComplete={() => console.log('onAnimationComplete')}
+            // onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor="#e0ebeb" >
             {fill => <Text style={styles.points}>{fillVal}%</Text>}
             </AnimatedCircularProgress>

@@ -1,9 +1,11 @@
 export const colors = {
-    PRIMARY_COLOR: '#5BC0BE',
-    GREY_COLOR: '#e0e0e0',
-    SECONDARY_COLOR: '#C05B5D',
+    PRIMARY_COLOR: '#2fc4c1',
+    PRIMARY_LIGHT_COLOR: '#98e6e5',
+    SECONDARY_COLOR: '#b84749',
+    SECONDARY_LIGHT_COLOR: '#dba3a4',
     BORDER_COLOR: '#494850',
     DISABLED_BUTTON_COLOR: '#DCDCDC',
+
 }
 
 export const chartConfig = {
@@ -18,28 +20,8 @@ export const chartConfig = {
     }
 };
 
-export function ColorLuminance(hex, lum) {
-
-    // validate hex string
-    hex = String(hex).replace(/[^0-9a-f]/gi, '');
-    if (hex.length < 6) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    lum = lum || 0;
-
-    // convert to decimal and change luminosity
-    var rgb = "#", c, i;
-    for (i = 0; i < 3; i++) {
-        c = parseInt(hex.substr(i * 2, 2), 16);
-        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-        rgb += ("00" + c).substr(c.length);
-    }
-
-    return rgb;
-};
-
 export const calculateMiddleColor = ({
-    color1 = colors.GREY_COLOR,
+    color1 = colors.PRIMARY_LIGHT_COLOR,
     color2 = colors.PRIMARY_COLOR,
     ratio,
 }) => {

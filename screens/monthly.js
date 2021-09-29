@@ -1,28 +1,38 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Dimensions, Modal, Pressable, Text} from 'react-native';
-import {ContributionGraph} from 'react-native-chart-kit';
-import { chartConfig } from '../utils';
-import { colors } from '../utils';
+import React, { useState, useEffect, memo } from 'react';
+import {StyleSheet, View, Modal, Pressable, Text} from 'react-native';
+import { colors, calculateMiddleColor } from '../utils';
 import {Calendar} from 'react-native-calendars';
-const {PRIMARY_COLOR} = colors;
+import moment from "moment";
+const {PRIMARY_COLOR, PRIMARY_LIGHT_COLOR} = colors;
 
 export default function monthly() {
     const [modalVisible, setModalVisible] = useState(false);
-    const screenWidth = Dimensions.get('window').width * 1
-    const commitsData = [
-        { date: "2021-09-02", count: 1 },
-        { date: "2021-01-03", count: 2 },
-        { date: "2021-09-04", count: 3 },
-        { date: "2021-09-05", count: 4 },
-        { date: "2021-09-06", count: 5 },
-        { date: "2021-09-30", count: 2 },
-        // { date: "2021-09-31", count: 3 },
-        // { date: "2021-09-01", count: 2 },
-        // { date: "2021-09-02", count: 4 },
-        // { date: "2021-09-05", count: 2 },
-        // { date: "2021-09-30", count: 4 }
-      ];
-    const INITIAL_DATE = '2021-09-01';
+    const [date, setDate] = useState(moment().format('YYYY-MM-01'));
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+      const month = moment(date,'YYYY-MM-DD').format('MM');
+      const year = moment(date,'YYYY-MM-DD').format('YYYY');
+      if(moment(date,'YYYY-MM-DD').year()<=moment().year() && moment(date,'YYYY-MM-DD').month()<=moment().month()) {
+        const daysOfMonth = month===moment().format('MM') ? parseInt(moment().format('DD')) : moment(date,'YYYY-MM-DD').daysInMonth();
+        const newData = {};
+        for(let i=0; i<daysOfMonth; i++) {
+          const day = i<9 ? `0${i+1}`:`${i+1}`;
+          newData[`${year}-${month}-${day}`] = {
+            customStyles: {
+              container: {
+                backgroundColor: `#${calculateMiddleColor({color1: PRIMARY_LIGHT_COLOR, color2: PRIMARY_COLOR, ratio: Math.random()})}`
+              }
+            }
+          };
+        }
+        setData(newData);
+      }
+      else {
+        setData({});
+      }
+    }, [date]);
+    
     return (
         <View >
             <Modal
@@ -48,28 +58,15 @@ export default function monthly() {
                 </View>
                 </View>
             </Modal>
-            {/* <ContributionGraph
-            values={commitsData}
-            endDate={new Date("2021-09-30")}
-            numDays={30}
-            width={screenWidth}
-            height={300}
-            chartConfig={chartConfig}
-            /> */}
             <Calendar
             onDayPress={() => setModalVisible(!modalVisible)}
-            style={styles.calendar}
-            disableAllTouchEventsForInactiveDays
-            current={INITIAL_DATE}
-            minDate={'2021-05-01'}
-            markedDates={{
-                '2021-09-10': {
-                inactive: false
-                },
-                '2021-09-11': {
-                inactive: false
-                }
+            onMonthChange={(month) => {
+              setDate(month.dateString);
             }}
+            style={styles.calendar}
+            minDate={'2021-01-01'}
+            markingType={'custom'}
+            markedDates={data}
             />
         </View>
     )
