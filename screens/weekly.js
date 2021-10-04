@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {StyleSheet, View, SafeAreaView , Button, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
 import {colors} from '../utils/index';
 import  WeekBarChart  from '../components/WeekBarChart';
+import HealthActivities from '../components/HealthActivities';
 const { PRIMARY_COLOR, SECONDARY_COLOR, DISABLED_BUTTON_COLOR } = colors;
 import moment from "moment";
 
@@ -29,6 +30,16 @@ export default function weekly() {
           }
         ]
     });  
+
+    const [data, setData] = useState({
+      distance : 3.1,
+      averagePace : 5.6,
+      laying : '7 Hr 23 Min',
+      walking : '1 Hr 20 Min',
+      sitting : '3 Hr 12 Min',
+      emgIndex : 7.1,
+      dailyTarget : 5,
+  });
 
     useEffect(() => {
       if (moment().format('MMMM Do, YYYY') === date) {
@@ -140,6 +151,8 @@ export default function weekly() {
                   />
               </View>
           </SafeAreaView>
+          <Text style={styles.container}>Average Weekly Stats</Text>
+          <HealthActivities data={data}/>
         </ScrollView>
     )
 }
@@ -191,7 +204,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginHorizontal: 100,
-        marginVertical: 10
+        marginVertical: 10,
+        paddingTop: 20,
     },
     main : {
       justifyContent: 'center',
