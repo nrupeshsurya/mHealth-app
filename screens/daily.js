@@ -4,7 +4,7 @@ import {StyleSheet, View, Text, TouchableOpacity, ScrollView, RefreshControl} fr
 import HealthActivites from '../components/HealthActivities';
 import HealthProgress from '../components/HealthProgress';
 import moment from "moment";
-import { colors } from '../utils';
+import { colors, awsURL } from '../utils';
 
 const {PRIMARY_COLOR, DISABLED_BUTTON_COLOR} = colors;
 
@@ -17,19 +17,11 @@ export default function daily() {
         averagePace : 5.6,
         laying : '7 Hr 23 Min',
         walking : '1 Hr 20 Min',
-        sitting : '3 Hr 12 Min',
+        standing : '3 Hr 12 Min',
         emgIndex : 7.1,
         dailyTarget : 5,
     });
-    // percentage
-    // emg index 
-    // daily target 
-
-    // distance
-    // average pace
-    // laying
-    // walking
-    // sitting
+    
     useEffect(() => {
         if (moment().format('MMMM Do, YYYY') === date) {
             setDisableDate(true);
@@ -42,16 +34,20 @@ export default function daily() {
     
     async function load() {
         // setRefresh(true);
+        const dataUrl = `${awsURL}/items/${moment(date,'MMMM Do, YYYY').format('YYYY-MM-DD')}`;
+        // console.log(dataUrl);
+        const response = await fetch(dataUrl);
+        const result = await response.json();
+        // console.log(result['Item']);
         setData({
-            distance: Math.random() * (5 - 0) + 0,
-            averagePace: Math.random() * (7 - 3) + 3,
-            laying: `${Math.floor(Math.random() * (8 - 6) + 6)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
-            walking: `${Math.floor(Math.random() * (2 - 1) + 1)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
-            sitting: `${Math.floor(Math.random() * (3 - 2) + 2)} Hr ${Math.floor(Math.random() * (59 - 0) + 0)} Min`,
-            emgIndex: Math.round((Math.random() * (9 - 0) + 0)*10)/10,
+            distance: result['Item'].distance,
+            averagePace: result['Item'].averagePace,
+            laying: `${Math.floor(result['Item'].sleeping/3600)} Hr ${Math.floor(result['Item'].sleeping % 3600 / 60)} Min`,
+            walking: `${Math.floor(result['Item'].walking/3600)} Hr ${Math.floor(result['Item'].walking % 3600 / 60)} Min`,
+            standing: `${Math.floor(result['Item'].standing/3600)} Hr ${Math.floor(result['Item'].standing % 3600 / 60)} Min`,
+            emgIndex: result['Item'].emgIndex,
             dailyTarget: 5,
         });
-        // setRefresh(false);
     };
     return (
         <ScrollView

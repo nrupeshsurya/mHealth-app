@@ -11,7 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Daily">
-        <Drawer.Screen name="Daily" component={Daily} />
+        <Drawer.Screen name="Daily" component={Daily} initialParams={{'date':'today!',}} />
         <Drawer.Screen name="Weekly" component={Weekly} />
         <Drawer.Screen name="Monthly" component={Monthly} />
       </Drawer.Navigator>

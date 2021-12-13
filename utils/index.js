@@ -1,3 +1,5 @@
+// import {awsURL} from 'react-native-dotenv'
+
 export const colors = {
     PRIMARY_COLOR: '#2fc4c1',
     PRIMARY_LIGHT_COLOR: '#98e6e5',
@@ -7,6 +9,8 @@ export const colors = {
     DISABLED_BUTTON_COLOR: '#DCDCDC',
 
 }
+
+export const awsURL = process.env.awsURL;
 
 export const chartConfig = {
     backgroundColor: '#ffffff',

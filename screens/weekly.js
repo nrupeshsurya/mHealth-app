@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {StyleSheet, View, SafeAreaView , Button, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
-import {colors} from '../utils/index';
+import {colors, awsURL} from '../utils/index';
 import  WeekBarChart  from '../components/WeekBarChart';
 import HealthActivities from '../components/HealthActivities';
 const { PRIMARY_COLOR, SECONDARY_COLOR, DISABLED_BUTTON_COLOR } = colors;
@@ -8,7 +8,7 @@ import moment from "moment";
 
 
 export default function weekly() {
-    const [distanceEmgSetter, setDistanceEmgSetter] = useState(true);
+    const [distanceEmgSetter, setDistanceEmgSetter] = useState(false);
     const [date, setDate] = useState(moment().format('MMMM Do, YYYY'));
     const [startDate, setStartDate] = useState(moment().startOf('isoWeek').format('MMMM Do'));
     const [endDate, setEndDate] = useState(moment().endOf('isoWeek').format('MMMM Do'));
@@ -36,10 +36,11 @@ export default function weekly() {
       averagePace : 5.6,
       laying : '7 Hr 23 Min',
       walking : '1 Hr 20 Min',
-      sitting : '3 Hr 12 Min',
+      standing : '3 Hr 12 Min',
       emgIndex : 7.1,
       dailyTarget : 5,
-  });
+      showEmg : true
+    });
 
     useEffect(() => {
       if (moment().format('MMMM Do, YYYY') === date) {
@@ -57,22 +58,47 @@ export default function weekly() {
     async function load() {
       const emgVal = [];
       const distanceVal = [];
-      if(moment().format('MMMM Do, YYYY') === date) {
-        const daysPassed = (moment().diff(moment().startOf('isoWeek'),'days')+1);
-        for(let i=0; i<daysPassed; i++) {
-          emgVal.push(Math.round((Math.random() * (9 - 0) + 0)*10)/10);
-          distanceVal.push(Math.round((Math.random() * (5 - 0) + 0)*10)/10);
-        }
-        for(let i=daysPassed; i<7; i++) {
-          emgVal.push(0);
-          distanceVal.push(0);
-        }
+      var s = moment(date,'MMMM Do, YYYY').startOf('isoWeek');
+      var e = moment().isSame(moment(date,'MMMM Do, YYYY'),'week')?moment():moment(date,'MMMM Do, YYYY').endOf('isoWeek');
+      const keyList = []
+      for (var m = moment(s); m.isBefore(e); m.add(1, 'days')) {
+        keyList.push({"date" : m.format('YYYY-MM-DD')})
       }
-      else {
-        for (let i=0; i<7; i++) {
-          emgVal.push(Math.round((Math.random() * (9 - 0) + 0)*10)/10);
-          distanceVal.push(Math.round((Math.random() * (5 - 0) + 0)*10)/10);
-        }
+      // console.log(keyList)
+      const response = await fetch(`${awsURL}/items`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'keys' : keyList
+        })
+      });
+      const result = await response.json();
+      // console.log(result);
+      var avgWalk = 0;
+      var avgStand = 0;
+      var avgSleep = 0;
+      var avgEmgIndex = 0;
+      result['Responses']['processed-data-india'].sort((a,b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0))
+      for (const x of result['Responses']['processed-data-india']) {
+        emgVal.push(x['emgIndex']);
+        avgWalk+=parseInt(x['walking']);
+        avgStand+=parseInt(x['standing']);
+        avgSleep+=parseInt(x['sleeping']);
+        avgEmgIndex+=parseInt(x['emgIndex']);
+        distanceVal.push(x['distance']);
+      }
+      // console.log(emgVal.length)
+      avgWalk = avgWalk/emgVal.length;
+      // console.log(avgWalk);
+      avgSleep = avgSleep/emgVal.length;
+      avgStand = avgStand/emgVal.length;
+      avgEmgIndex = avgEmgIndex/emgVal.length;
+      for(var i = emgVal.length; i<7; i++) {
+        emgVal.push(0);
+        distanceVal.push(0);
       }
       setDistanceData({
         labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -90,6 +116,16 @@ export default function weekly() {
           }
         ]
       });
+      setData({
+        distance: 5,
+        averagePace: 5.5,
+        laying: `${Math.floor(avgSleep/3600)} Hr ${Math.floor(avgSleep % 3600 / 60)} Min`,
+        walking: `${Math.floor(avgWalk/3600)} Hr ${Math.floor(avgSleep % 3600 / 60)} Min`,
+        standing: `${Math.floor(avgStand/3600)} Hr ${Math.floor(avgStand % 3600 / 60)} Min`,
+        emgIndex: avgEmgIndex,
+        dailyTarget: 5,
+        showEmg: true
+    });
     };
     return (
         <ScrollView
@@ -122,7 +158,7 @@ export default function weekly() {
             </View>
           </View>
           {distanceEmgSetter && <Text style={styles.container}>Distance</Text>}
-          {!distanceEmgSetter && <Text style={styles.container} >EMG Index</Text>}
+          {!distanceEmgSetter && <Text style={styles.container} >Muscle Activity Score</Text>}
           {distanceEmgSetter && <WeekBarChart  data={distanceData} color = {PRIMARY_COLOR}  suffix={"km"} />}
           {!distanceEmgSetter && <WeekBarChart  data={emgData} color = {SECONDARY_COLOR}  suffix={""} />}
           {/* <Pressable
@@ -137,8 +173,8 @@ export default function weekly() {
           >
               <Text>EMG</Text>
           </Pressable> */}
-          <SafeAreaView style={styles.container}>
-              <View style={styles.fixToText}>
+          {/* <SafeAreaView style={styles.container}> */}
+              {/* <View style={styles.fixToText}>
                   <Button
                   title="Distance"
                   onPress={() => setDistanceEmgSetter(true)}
@@ -149,8 +185,8 @@ export default function weekly() {
                   onPress={() => setDistanceEmgSetter(false)}
                   color={SECONDARY_COLOR}
                   />
-              </View>
-          </SafeAreaView>
+              </View> */}
+          {/* </SafeAreaView> */}
           <Text style={styles.container}>Average Weekly Stats</Text>
           <HealthActivities data={data}/>
         </ScrollView>
@@ -165,10 +201,10 @@ const styles = StyleSheet.create({
     },
     textSecondary : {
       fontSize: 20,
-      color: '#494850',
-      fontWeight: '500',
-      marginTop: 10,
-      marginBottom: 30,
+        color: '#494850',
+        fontWeight: '500',
+        marginTop: 10,
+        marginBottom: 30,
     },
     triangle: {
       width: 0,

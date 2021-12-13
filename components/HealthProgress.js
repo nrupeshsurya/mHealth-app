@@ -15,22 +15,25 @@ export default function HealthProgress({data}) {
     return (
         <View style = {styles.progress}>
             {/* Circular Progress Bar  */}
+
+            <Text style = {styles.textSecondary}>Muscle Activity Score</Text>
+
             <AnimatedCircularProgress
             size={120}
             width={15}
-            fill={fillVal}
+            fill={emgIndex*10}
             tintColor={tintColor}
             rotation={0}
-            // onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor="#e0ebeb" >
-            {fill => <Text style={styles.points}>{fillVal}%</Text>}
+            {fill => <Text style={styles.points}>{emgIndex}</Text>}
             </AnimatedCircularProgress>
 
-            <Text style = {styles.textSecondary}>Daily target : {dailyTarget} Km</Text>
+            <Text style = {styles.textSecondary}>Target Muscle Activity Score : 8</Text>
+
 
             {/* Muscle Activity Progress  */}
-            <Progress.Bar style={styles.linProgress} progress={emgIndex/10} width={200} color={linColor} />
-            <Text style = {styles.textSecondary}>EMG Index : {emgIndex}</Text>
+            {/* <Progress.Bar style={styles.linProgress} progress={emgIndex/10} width={200} color={linColor} /> */}
+            {/* <Text style = {styles.textSecondary}>EMG Index : {emgIndex}</Text> */}
         </View>
     )
 }

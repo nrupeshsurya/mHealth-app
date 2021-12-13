@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '../utils/index';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
 export default function HealthActivites({data}) {
-    const {laying, walking, sitting, averagePace, distance } = data;
+    const {laying, walking, standing, averagePace, distance, showEmg, emgIndex } = data;
+    // console.log(emgIndex);
+    // console.log(showEmg);
     return (
+        <ScrollView>
+            {showEmg && <Text style={styles.avgText}>Average Muscle Activity Score: {Math.round(emgIndex * 100) / 100}</Text>}
         <View style = {styles.weatherDetails}>
             <View style={styles.weatherDetailsRow}>
                 <View style={{...styles.weatherDetailsBox, borderRightWidth: 1, borderRightColor: BORDER_COLOR}}>
@@ -21,10 +26,10 @@ export default function HealthActivites({data}) {
                 </View>
                 <View style={{...styles.weatherDetailsBox, borderRightWidth: 1, borderRightColor: BORDER_COLOR}}>
                     <View style={styles.weatherDetailsRow}>
-                        <MaterialCommunityIcons name="chair-rolling" size={25} color={PRIMARY_COLOR} />
+                        <MaterialCommunityIcons name="human-male" size={25} color={PRIMARY_COLOR} />
                         <View style={styles.weatherDetailsItems}>
                             {/* <Text>Feels like :</Text> */}
-                            <Text style={styles.textSecondary}>{sitting}</Text>
+                            <Text style={styles.textSecondary}>{standing}</Text>
                         </View>
                     </View>
                 </View>
@@ -38,28 +43,29 @@ export default function HealthActivites({data}) {
                     </View>
                 </View>
             </View>
-            <View style={{...styles.weatherDetailsRow, borderTopWidth: 1 , borderTopColor: BORDER_COLOR}}>
+            {/* <View style={{...styles.weatherDetailsRow, borderTopWidth: 1 , borderTopColor: BORDER_COLOR}}>
                 <View style={{...styles.weatherDetailsBox, borderRightWidth: 1, borderRightColor: BORDER_COLOR}}>
-                    <View style={styles.weatherDetailsRow}>
-                        <MaterialCommunityIcons name="map-marker-multiple" size={30} color={PRIMARY_COLOR} />
-                        <View style={styles.weatherDetailsItems}>
-                            <Text>Total Distance :</Text>
-                            <Text style={styles.textSecondary}>{Math.round(distance*10)/10} Km</Text>
-                        </View>
-                    </View>
+                <View style={styles.weatherDetailsRow}>
+                <MaterialCommunityIcons name="map-marker-multiple" size={30} color={PRIMARY_COLOR} />
+                <View style={styles.weatherDetailsItems}>
+                <Text>Total Distance :</Text>
+                <Text style={styles.textSecondary}>{Math.round(distance*10)/10} Km</Text>
+                </View>
+                </View>
                 </View>
                 <View style={styles.weatherDetailsBox}>
                 <View style={styles.weatherDetailsRow}>
-                        <MaterialCommunityIcons name="speedometer" size={30} color={PRIMARY_COLOR} />
-                        <View style={styles.weatherDetailsItems}>
-                            <Text>Average Pace: </Text>
-                            <Text style={styles.textSecondary}>{Math.round(averagePace*10)/10} Km/Hr</Text>
-                        </View>
-                    </View>
+                <MaterialCommunityIcons name="speedometer" size={30} color={PRIMARY_COLOR} />
+                <View style={styles.weatherDetailsItems}>
+                <Text>Average Pace: </Text>
+                <Text style={styles.textSecondary}>{Math.round(averagePace*10)/10} Km/Hr</Text>
+                </View>
+                </View>
                 </View>
                 
-            </View>
+            </View> */}
         </View>
+    </ScrollView>
     )
 }
 
@@ -89,5 +95,13 @@ const styles = StyleSheet.create({
         color: '#494850',
         fontWeight: '700',
         margin: 7
+    },
+    avgText: {
+        fontSize: 20,
+        color: '#494850',
+        fontWeight: '500',
+        marginTop: 10,
+        marginBottom: -2,
+        marginHorizontal: 43
     }
 })
